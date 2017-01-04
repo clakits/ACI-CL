@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+<style type="text/css">
+  
+.node {
+    cursor: pointer;
+}
+
+.overlay{
+    background-color:#EEE;
+}
+   
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+   
+.node text {
+  font-size:10px; 
+  font-family:sans-serif;
+}
+   
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+}
+
+.templink {
+   fill: none;
+    stroke: red;
+    stroke-width: 3px;
+}
+
+.ghostCircle.show{
+    display:block;
+}
+
+.ghostCircle, .activeDrag .ghostCircle{
+     display: none;
+}
+</style>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+        <title>ACI Endpoint Group Info</title>
+        <script type="text/javascript" src="/extjs/ext-all-debug.js"></script>
+         
+        <script type="text/javascript" language="javascript" src="app.js"></script>
+        <script type="text/javascript" language="javascript" src="d3/d3.min.js"></script>
+        <script type="text/javascript" language="javascript" src="jquery/jquery.2.1.4.js"></script>
+         
+
+
+
+        <script type="text/javascript" charset="utf-8">
+            var queryUrl = document.location.origin + "/appcenter/Cisco/EpgInfo/getEpg.json";
+            
+            console.log(queryUrl);
+            d3.json(queryUrl)
+            .header("DevCookie", window.APIC_DEV_COOKIE)
+            .header("APIC-challenge", window.APIC_URL_TOKEN)
+            .get(function(error, d3data) {
+                console.log(d3data);
+                if(!d3data){
+                    console.log("d3data is empty");
+                    return;
+                }
+                function tabulate(d3data, columns) {
+                    var table = d3.select('#appdata').append('table')
+                    var thead = table.append('thead')
+                    var tbody = table.append('tbody');
+
+                    // append the header row
+                    thead.append('tr')
+                        .selectAll('th')
+                        .data(columns).enter()
+                        .append('th')
+                        .text(function (column) { return column; });
+
+                    // create a row for each object in the data
+                    var rows = tbody.selectAll('tr')
+                        .data(d3data)
+                        .enter()
+                        .append('tr');
+
+                    // create a cell in each row for each column
+                    var cells = rows.selectAll('td')
+                        .data(function (row) {
+                        return columns.map(function (column) {
+                            return {column: column, value: row[column]};
+                        });
+                    })
+                    .enter()
+                    .append('td')
+                    .text(function (d) { return d.value; });
+
+                    return table;
+                }
+
+                console.log(d3data.resuts)
+                tabulate(d3data.results, ['tn', 'ap/l2out', 'epg', 'cep', 'ip', 'type', 'path', 'port', 'pod', 'encap', 'bd']);
+     
+                
+            });
+
+            window.addEventListener('message', function (e) {
+            if (e.source === window.parent) {
+                var tokenObj = Ext.decode(e.data, true);
+                if (tokenObj) {
+                    window.APIC_DEV_COOKIE = tokenObj.token;
+                    window.APIC_URL_TOKEN = tokenObj.urlToken;
+                }
+            }
+        });
+        </script>
+    </head>
+<body>
+    <h1 align=Center>ACI Endpoint Group Info</h1>
+    <br>
+    <div align="center">
+    <div id="appdata"></div>
+    </div>
+</body>
+</html>

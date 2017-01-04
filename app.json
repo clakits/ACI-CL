@@ -1,0 +1,28 @@
+{
+    "api":{
+        "getStats":"SomeValue",
+        "setQos":"SomeValue"
+    },
+    "apicversion":"2.2(1a)",
+    "appid":"EpgInfo",
+    "author":"Gabe Fontenot",
+    "category":[
+        "Visibility and Monitoring"
+    ],
+    "contact":{
+        "contact-email":"gfonteno@cisco.com",
+        "contact-phone":"123-4567890",
+        "contact-url":"http://www.cisco.com/aci/"
+    },
+    "iconfile":"HelloAci.png",
+    "interimversion":"2.2(1a)",
+    "name":"EpgInfo",
+    "permissions":[
+        "admin"
+    ],
+    "permissionslevel":"write",
+    "shortdescr":"This app provides EPG info.",
+    "vendor":"Cisco",
+    "vendordomain":"Cisco",
+    "version":"1.0"
+}
